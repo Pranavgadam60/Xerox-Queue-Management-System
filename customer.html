@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Xerox Queue Management System</title>
+  <link rel="stylesheet" href="customer.css">
+</head>
+<body>
+  <h2>Smart Xerox Queue Management System</h2>
+  <h4>Xerox Form For Customer</h4>
+
+  <form action="upload.php" method="post" enctype="multipart/form-data">
+    <div class="input-group mb-3">
+      <label class="input-group-text" for="inputGroupFile01">Upload</label>
+      <input type="file" class="form-control" id="inputGroupFile01" name="files[]" multiple>
+    </div>
+    <ul id="fileList"></ul>
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+    <p>Choose Colour Type:</p>
+    <input type="radio" id="bw" name="colour" value="Black and White">
+    <label for="bw">Black and White</label><br>
+    <input type="radio" id="colour" name="colour" value="Colour">
+    <label for="colour">Colourful</label>
+
+    <p>Select Format Type:</p>
+    <input type="radio" id="formatA4" name="Format" value="A4">
+    <label for="formatA4">A4</label><br>
+    <input type="radio" id="formatA3" name="Format" value="A3">
+    <label for="formatA3">A3</label>
+
+    <p>Choose Xerox Type:</p>
+    <input type="radio" id="backToBack" name="Method" value="Back To Back">
+    <label for="backToBack">Back To Back</label><br>
+    <input type="radio" id="oneToOne" name="Method" value="One to One">
+    <label for="oneToOne">One to One</label>
+
+    <p>Enter Number Of Copies:</p>
+    <label for="quantity">Copies:</label>
+    <input type="number" id="quantity" name="quantity" min="1">
+
+    <p>
+      <input type="checkbox" id="applyAll" name="applyAll" checked>
+      <label for="applyAll">Apply these settings to all uploaded documents</label>
+    </p>
+  </form>
+
+  <ul id="fileList"></ul>
+
+<script>
+  const input = document.getElementById('inputGroupFile01');
+  const list = document.getElementById('fileList');
+  const applyAll = document.getElementById('applyAll');
+
+  input.addEventListener('change', () => {
+    list.innerHTML = '';
+    for (const file of input.files) {
+      const li = document.createElement('li');
+      li.textContent = file.name;
+
+      // If Apply All is checked, just show global settings
+      if (applyAll.checked) {
+        li.textContent += " (global settings applied)";
+      } else {
+        // Otherwise, create per-file controls
+        const settingsDiv = document.createElement('div');
+        settingsDiv.innerHTML = `
+          <label>Colour:</label>
+          <select name="colour_${file.name}">
+            <option value="Black and White">Black and White</option>
+            <option value="Colourful">Colourful</option>
+          </select>
+
+          <label>Format:</label>
+          <select name="format_${file.name}">
+            <option value="A4">A4</option>
+            <option value="A3">A3</option>
+          </select>
+
+          <label>Method:</label>
+          <select name="method_${file.name}">
+            <option value="Back To Back">Back To Back</option>
+            <option value="One to One">One to One</option>
+          </select>
+
+          <label>Copies:</label>
+          <input type="number" name="copies_${file.name}" min="1" value="1">
+        `;
+        li.appendChild(settingsDiv);
+      }
+
+      list.appendChild(li);
+    }
+  });
+</script>
+
+</body>
+</html>
